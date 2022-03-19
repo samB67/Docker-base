@@ -1,0 +1,30 @@
+version: '3'
+services:
+  #php
+  app:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    container_name: app
+    tty: true
+    restart: unless-stopped
+    image: samb/symfonyproject
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./:/var/www
+  #nginx
+  webserver:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    container_name: webserver
+    restart: unless-stopped
+    image: samb/nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
